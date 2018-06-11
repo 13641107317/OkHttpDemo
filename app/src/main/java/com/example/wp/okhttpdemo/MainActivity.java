@@ -14,22 +14,27 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private final String TAG = getClass().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        request();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                request();
+            }
+        }).start();
     }
-    public void request(){
+
+    public void request() {
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(5, TimeUnit.SECONDS).build();
         Request request = new Request.Builder().url("http://www.baidu.com").get().build();
         Call call = client.newCall(request);
         try {
             Response response = call.execute();
-            Log.i(TAG, "request: "+response.body().string());
+            Log.i(TAG, "request: " + response.body().string());
         } catch (IOException e) {
             e.printStackTrace();
         }
